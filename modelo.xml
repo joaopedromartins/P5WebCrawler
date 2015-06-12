@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noticias data="2015-06-11T13:21:08Z" quantidade="20">
+	<noticia regiao="Europe">
+		<titulo>Título da notícia</titulo>
+		<data>2015-06-11T13:21:08Z</data>
+		<seccao>entertenimento</seccao>
+		<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html</url>
+		<autor>Autor do artigo</autor>
+		<cabecalho>texto do cabeçalho da notícia</cabecalho>
+		<descricao>descricao da noticia</descricao>
+		<corpo>corpo da noticia</corpo>
+	</noticia>
+	<noticia regiao="Europe">
+		<titulo>Título da notícia</titulo>
+		<data>2015-06-11T13:21:08Z</data>
+		<seccao>entertenimento</seccao>
+		<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html</url>
+		<autor>Autor do artigo</autor>
+		<cabecalho>texto do cabeçalho da notícia</cabecalho>
+		<descricao>descricao da noticia</descricao>
+		<corpo>corpo da noticia</corpo>
+	</noticia>
+</noticias>
