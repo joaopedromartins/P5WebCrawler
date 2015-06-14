@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-  <xs:element name="noticias">
+  <xs:element name="feedNoticias">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="noticiasRegiao"/>
+      </xs:sequence>
+      <xs:attribute name="data" use="required" type="xs:dateTime"/>
+      <xs:attribute name="quantidade" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="noticiasRegiao">
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="noticia"/>
       </xs:sequence>
-      <xs:attribute name="data" use="required" type="xs:dateTime"/>
       <xs:attribute name="quantidade" use="required" type="xs:integer"/>
+      <xs:attribute name="regiao" use="required" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="noticia">
@@ -20,8 +29,8 @@
         <xs:element ref="cabecalho"/>
         <xs:element ref="descricao"/>
         <xs:element ref="corpo"/>
+        <xs:element ref="imagem"/>
       </xs:sequence>
-      <xs:attribute name="regiao" use="required" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="titulo" type="xs:string"/>
@@ -32,4 +41,5 @@
   <xs:element name="cabecalho" type="xs:string"/>
   <xs:element name="descricao" type="xs:string"/>
   <xs:element name="corpo" type="xs:string"/>
+  <xs:element name="imagem" type="xs:anyURI"/>
 </xs:schema>

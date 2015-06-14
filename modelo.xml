@@ -1,23 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<noticias data="2015-06-11T13:21:08Z" quantidade="20">
-	<noticia regiao="Europe">
-		<titulo>Título da notícia</titulo>
-		<data>2015-06-11T13:21:08Z</data>
-		<seccao>entertenimento</seccao>
-		<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html</url>
-		<autor>Autor do artigo</autor>
-		<cabecalho>texto do cabeçalho da notícia</cabecalho>
-		<descricao>descricao da noticia</descricao>
-		<corpo>corpo da noticia</corpo>
-	</noticia>
-	<noticia regiao="Europe">
-		<titulo>Título da notícia</titulo>
-		<data>2015-06-11T13:21:08Z</data>
-		<seccao>entertenimento</seccao>
-		<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html</url>
-		<autor>Autor do artigo</autor>
-		<cabecalho>texto do cabeçalho da notícia</cabecalho>
-		<descricao>descricao da noticia</descricao>
-		<corpo>corpo da noticia</corpo>
-	</noticia>
-</noticias>
+<feedNoticias data="2015-06-11T13:21:08Z" quantidade="40">
+	<noticiasRegiao regiao="Europe" quantidade="20">
+		<noticia>
+			<titulo>Título da notícia</titulo>
+			<data>2015-06-11T13:21:08Z</data>
+			<seccao>entertenimento</seccao>
+			<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html
+			</url>
+			<autor>Autor do artigo</autor>
+			<cabecalho>texto do cabeçalho da notícia</cabecalho>
+			<descricao>descricao da noticia</descricao>
+			<corpo>corpo da noticia</corpo>
+			<imagem>http://i2.cdn.turner.com/cnnnext/dam/assets/150613154758-13-dallas-shooting-van-fire-large-169.jpg</imagem>
+		</noticia>
+		<noticia>
+			<titulo>Título da notícia</titulo>
+			<data>2015-06-11T13:21:08Z</data>
+			<seccao>entertenimento</seccao>
+			<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html
+			</url>
+			<autor>Autor do artigo</autor>
+			<cabecalho>texto do cabeçalho da notícia</cabecalho>
+			<descricao>descricao da noticia</descricao>
+			<corpo>corpo da noticia</corpo>
+			<imagem>http://i2.cdn.turner.com/cnnnext/dam/assets/150613154758-13-dallas-shooting-van-fire-large-169.jpg</imagem>
+		</noticia>
+	</noticiasRegiao>
+	<noticiasRegiao regiao="China" quantidade="20">
+		<noticia>
+			<titulo>Título da notícia</titulo>
+			<data>2015-06-11T13:21:08Z</data>
+			<seccao>entertenimento</seccao>
+			<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html
+			</url>
+			<autor>Autor do artigo</autor>
+			<cabecalho>texto do cabeçalho da notícia</cabecalho>
+			<descricao>descricao da noticia</descricao>
+			<corpo>corpo da noticia</corpo>
+			<imagem>http://i2.cdn.turner.com/cnnnext/dam/assets/150613154758-13-dallas-shooting-van-fire-large-169.jpg</imagem>
+		</noticia>
+		<noticia>
+			<titulo>Título da notícia</titulo>
+			<data>2015-06-11T13:21:08Z</data>
+			<seccao>entertenimento</seccao>
+			<url>http://www.cnn.com/2015/06/11/entertainment/fifty-shades-grey-new-book-stolen/index.html
+			</url>
+			<autor>Autor do artigo</autor>
+			<cabecalho>texto do cabeçalho da notícia</cabecalho>
+			<descricao>descricao da noticia</descricao>
+			<corpo>corpo da noticia</corpo>
+			<imagem>http://i2.cdn.turner.com/cnnnext/dam/assets/150613154758-13-dallas-shooting-van-fire-large-169.jpg</imagem>
+		</noticia>
+	</noticiasRegiao>
+</feedNoticias>

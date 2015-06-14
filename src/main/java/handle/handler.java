@@ -10,33 +10,35 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import generated.Noticias;
+import generated.FeedNoticias;
 
 public class handler {
 	
 	// Export: Marshalling
-    public static void marshal(Noticias noticias, File selectedFile)
+    public static void marshal(FeedNoticias feed, File selectedFile, String xmlFilename)
             throws IOException, JAXBException {
         JAXBContext context;
         BufferedWriter writer = null;
         writer = new BufferedWriter(new FileWriter(selectedFile));
-        context = JAXBContext.newInstance(Noticias.class);
+        context = JAXBContext.newInstance(FeedNoticias.class);
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        m.marshal(noticias, writer);
+        m.setProperty("com.sun.xml.internal.bind.xmlHeaders",
+        		"<?xml-stylesheet type=\"text/xsl\" href=\"" + xmlFilename + "\" ?>\n");
+        m.marshal(feed, writer);
         writer.close();
     }
  
     // Import: Unmarshalling
-    public static Noticias unmarshal(File importFile) throws JAXBException {
-        Noticias noticias = null;
+    public static FeedNoticias unmarshal(File importFile) throws JAXBException {
+        FeedNoticias feed = null;
         JAXBContext context;
  
-        context = JAXBContext.newInstance(Noticias.class);
+        context = JAXBContext.newInstance(FeedNoticias.class);
         Unmarshaller um = context.createUnmarshaller();
-        noticias = (Noticias) um.unmarshal(importFile);
+        feed = (FeedNoticias) um.unmarshal(importFile);
  
-        return noticias;
+        return feed;
     }
 
 }

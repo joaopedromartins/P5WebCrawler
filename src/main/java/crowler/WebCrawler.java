@@ -1,8 +1,10 @@
 package crowler;
 
+import generated.FeedNoticias;
 import generated.Noticia;
-import generated.Noticias;
+import generated.NoticiasRegiao;
 import handle.XMLGregorianCalendarConversionUtil;
+import handle.XmlJmsConverter;
 import handle.handler;
 
 import java.io.File;
@@ -17,8 +19,11 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.naming.NamingException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import jms.Sender;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,10 +34,47 @@ import org.jsoup.select.Elements;
 
 public class WebCrawler {
 	
-	public void CrowlerCNN(String url, String path){
+	public static void main(String[] args) {
+		new WebCrawler().StartCrlowling();		
+	}
+	
+	public void StartCrlowling(){
+		FeedNoticias feed = new FeedNoticias();
+		feed.setData(XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(new Date()));
+		int quant = 0;
+		NoticiasRegiao europe = CrowlerCNN("http://edition.cnn.com", "/europe");
+			quant += europe.getQuantidade();
+		NoticiasRegiao us = CrowlerCNN("http://edition.cnn.com", "/us");
+			quant += us.getQuantidade();
+		NoticiasRegiao china = CrowlerCNN("http://edition.cnn.com", "/china");
+			quant += china.getQuantidade();
+		NoticiasRegiao asia = CrowlerCNN("http://edition.cnn.com", "/asia");
+			quant += asia.getQuantidade();
+		NoticiasRegiao middleeast = CrowlerCNN("http://edition.cnn.com", "/middle-east");
+			quant += middleeast.getQuantidade();
+		NoticiasRegiao africa = CrowlerCNN("http://edition.cnn.com", "/africa");
+			quant += africa.getQuantidade();
+		NoticiasRegiao americas = CrowlerCNN("http://edition.cnn.com", "/americas");
+			quant += americas.getQuantidade();
 		
-		Noticias newsAg = new Noticias();		
-		newsAg.setData(XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(new Date()));
+		feed.setQuantidade(quant);
+		feed.getNoticiasRegiao().add(europe);
+		feed.getNoticiasRegiao().add(us);
+		feed.getNoticiasRegiao().add(china);
+		feed.getNoticiasRegiao().add(asia);
+		feed.getNoticiasRegiao().add(middleeast);
+		feed.getNoticiasRegiao().add(africa);
+		feed.getNoticiasRegiao().add(americas);
+		
+		generateXMLFile(feed, "newsteste.xml");
+		sendXMLFileToTopic("newsteste.xml");
+	}
+	
+	public NoticiasRegiao CrowlerCNN(String url, String path){
+		
+		NoticiasRegiao newsAg = new NoticiasRegiao();		
+		newsAg.setRegiao(path.substring(1).toUpperCase());
+
 		
 		HashSet<String> news = getUrlNoticias(url, path);
 		
@@ -41,13 +83,29 @@ public class WebCrawler {
 			newsAg.getNoticia().add(n1);
 		}
 		newsAg.setQuantidade(newsAg.getNoticia().size());
-		
+		return newsAg;
+	}
+	
+	public void generateXMLFile(FeedNoticias cnoticias, String outputfilename){
 		try {
-			handler.marshal(newsAg, new File ("newsteste.xml"));
+			handler.marshal(cnoticias, new File (outputfilename), "text.xsl");
 		} catch (IOException | JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void sendXMLFileToTopic(String filename){
+		
+		String message = XmlJmsConverter.convertXMLFileToString(filename);
+		
+		try {
+			
+			Sender.main(null, message);
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 	}
 	
 	public Noticia getNoticia(String url){
@@ -55,22 +113,23 @@ public class WebCrawler {
 		Document doc = null;
 		try {
 			doc = Jsoup.connect(url)
+					.userAgent("Mozilla")
 					.timeout(10000)
 					.get();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			System.out.println("url: " + url);
+//			System.out.println("url: " + url);
 			String titulo ="";  
 			
 			titulo += doc.select("h1.pg-headline").first().text();				
-			System.out.println("título: " + titulo);
+//			System.out.println("título: " + titulo);
 			n.setTitulo(titulo);
 			
 			Elements metalinkssection = doc.select("meta[itemprop=articleSection]");
 			String section = metalinkssection.attr("content");
-			System.out.println("Section: "+section);
+//			System.out.println("Section: "+section);
 			n.setSeccao(section);
 			
 			Elements metalinksdata = doc.select("meta[itemprop=dateModified]");
@@ -83,66 +142,51 @@ public class WebCrawler {
 		 
 			try {		 
 				thedate = formatter.parse(dateInString);
-				System.out.println(thedate);
-				System.out.println(formatter.format(thedate));
+//				System.out.println(thedate);
+//				System.out.println(formatter.format(thedate));
 				n.setData(handle.XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(thedate));
 		 
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}			
 			
-//			Calendar cal = Calendar.getInstance();
-//			Date thedate = new Date();
-//			try {
-//				thedate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).parse(data);
-//			} catch (ParseException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'Z");
-//	
-			//2015-06-11T22:58:53Z
-//			try {
-//				
-//				cal.setTime(sdf.parse("2015-06-11T22:58:53Z" + "-0000"));
-//			
-//			} catch (ParseException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			System.out.println("data formatada: "+thedate.getTime());
-			System.out.println("Data: " + thedate.toString());
+//			System.out.println("Data: " + thedate.toString());
 			
 			
 			Elements metalinksurl = doc.select("meta[itemprop=url]");
 			String urln = metalinksurl.attr("content");
-			System.out.println("URL: "+urln);
+//			System.out.println("URL: "+urln);
 			n.setUrl(urln);
 			
 			Elements metalinksauthor = doc.select("meta[itemprop=author]");
 			String author = metalinksauthor.attr("content");
-			System.out.println("Author: "+author);
+//			System.out.println("Author: "+author);
 			n.setAutor(author);
 			
 			Elements metalinksheadline = doc.select("meta[itemprop=headline]");
 			String headline = metalinksheadline.attr("content");
-			System.out.println("Headline: "+headline);
+//			System.out.println("Headline: "+headline);
 			n.setCabecalho(headline);
 			
 			Elements metalinksdescription = doc.select("meta[itemprop=description]");
 			String description = metalinksdescription.attr("content");
-			System.out.println("Description: "+description);
+//			System.out.println("Description: "+description);
 			n.setDescricao(description);
 			
 			Elements corpo =doc.select("p.zn-body__paragraph");
-			System.out.println(corpo.size());
+//			System.out.println(corpo.size());
 			String corpotx="";
 			for (Element paragrafo : corpo) {
-				corpotx+=paragrafo.text() + "\n";
+				corpotx+=paragrafo.text() + " ";
 			}
-			System.out.println("corpo: " + corpotx);
-			System.out.println();
+//			System.out.println("corpo: " + corpotx);
+//			System.out.println();
 			n.setCorpo(corpotx);
+			
+			Elements metalinksimage = doc.select("meta[itemprop=image]");
+			String image = metalinksimage.attr("content");
+//			System.out.println("image: "+image);
+			n.setImagem(image);
 		return n;
 	}
 	
@@ -159,14 +203,15 @@ public class WebCrawler {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		Calendar dataatual = Calendar.getInstance();
 		String datecreated=dateFormat.format(dataatual.getTime());
-		System.out.println(datecreated);
+//		System.out.println(datecreated);
 		
 		//regiao
 		String regiao = path.substring(1).toUpperCase();
-		System.out.println(regiao);
+//		System.out.println(regiao);
 
 		try {
 			Document doc = Jsoup.connect(crowlUrl)
+					.userAgent("Mozilla")
 					.timeout(10000)
 					.get();
 			Elements hrefs = doc.select("article");
@@ -175,22 +220,19 @@ public class WebCrawler {
 			for (Element element : hrefs) {
 				newsUrl = element.attr("abs:data-vr-contentbox");
 				//escolhe apenas os que são noticias de texto
-				if(newsUrl.startsWith("http://edition.cnn.com/2")){
-					System.out.println(newsUrl);
+				if(newsUrl.startsWith("http://edition.cnn.com/2") && !newsUrl.contains("/gallery/")){
+//					System.out.println(newsUrl);
 					news.add(newsUrl);
 				}				
 			}
-			System.out.println("--------------Nº de noticias: "+news.size());
+//			System.out.println("--------------Nº de noticias: "+news.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return news;
 	}
-
-	public static void main(String[] args) {
-		new WebCrawler().CrowlerCNN("http://edition.cnn.com", "/europe");
-		
-	}
-
 }
