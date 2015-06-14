@@ -45,7 +45,7 @@ public class WebCrawler {
 		NoticiasRegiao europe = CrowlerCNN("http://edition.cnn.com", "/europe");
 			quant += europe.getQuantidade();
 		NoticiasRegiao us = CrowlerCNN("http://edition.cnn.com", "/us");
-			quant += us.getQuantidade();
+			quant += us.getQuantidade();	
 		NoticiasRegiao china = CrowlerCNN("http://edition.cnn.com", "/china");
 			quant += china.getQuantidade();
 		NoticiasRegiao asia = CrowlerCNN("http://edition.cnn.com", "/asia");
@@ -68,25 +68,29 @@ public class WebCrawler {
 		
 		generateXMLFile(feed, "newsteste.xml");
 		sendXMLFileToTopic("newsteste.xml");
+		System.out.println("--Terminado!--");
 	}
 	
 	public NoticiasRegiao CrowlerCNN(String url, String path){
 		
 		NoticiasRegiao newsAg = new NoticiasRegiao();		
 		newsAg.setRegiao(path.substring(1).toUpperCase());
-
+		System.out.println("A gerar feed de noticias: "+ newsAg.getRegiao());
 		
 		HashSet<String> news = getUrlNoticias(url, path);
-		
+		int count = 0;
 		for (String newsUrl : news) {
 			Noticia n1 = getNoticia(newsUrl);
 			newsAg.getNoticia().add(n1);
+			count++;
+			System.out.println(count*100/news.size()+"%");
 		}
 		newsAg.setQuantidade(newsAg.getNoticia().size());
 		return newsAg;
 	}
 	
 	public void generateXMLFile(FeedNoticias cnoticias, String outputfilename){
+		System.out.println("A gerar ficheiro XML: " + outputfilename);
 		try {
 			handler.marshal(cnoticias, new File (outputfilename), "text.xsl");
 		} catch (IOException | JAXBException e) {
@@ -95,7 +99,7 @@ public class WebCrawler {
 		}
 	}
 	public void sendXMLFileToTopic(String filename){
-		
+		System.out.println("A enviar mensagem para o topico");
 		String message = XmlJmsConverter.convertXMLFileToString(filename);
 		
 		try {
@@ -110,7 +114,7 @@ public class WebCrawler {
 	
 	public Noticia getNoticia(String url){
 		Noticia n = new Noticia();
-		Document doc = null;
+		Document doc;
 		try {
 			doc = Jsoup.connect(url)
 					.userAgent("Mozilla")
@@ -118,6 +122,7 @@ public class WebCrawler {
 					.get();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			doc = new Document("");
 			e.printStackTrace();
 		}
 //			System.out.println("url: " + url);
