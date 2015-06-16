@@ -6,7 +6,7 @@
 //
 
 
-package generated;
+package pt.uc.dei.aor.paj.generated;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

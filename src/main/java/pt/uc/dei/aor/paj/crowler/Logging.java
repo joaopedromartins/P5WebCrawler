@@ -1,4 +1,4 @@
-package crowler;
+package pt.uc.dei.aor.paj.crowler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

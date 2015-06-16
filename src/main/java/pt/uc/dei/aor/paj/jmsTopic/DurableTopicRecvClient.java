@@ -1,4 +1,4 @@
-package jmsTopic;
+package pt.uc.dei.aor.paj.jmsTopic;
 
 import java.io.IOException;
 import java.util.Scanner;

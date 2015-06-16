@@ -6,7 +6,7 @@
 //
 
 
-package generated;
+package pt.uc.dei.aor.paj.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

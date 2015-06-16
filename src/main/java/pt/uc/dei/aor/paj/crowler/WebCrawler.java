@@ -1,12 +1,4 @@
-package crowler;
-
-import generated.FeedNoticias;
-import generated.Noticia;
-import generated.NoticiasRegiao;
-import handle.XMLGregorianCalendarConversionUtil;
-import handle.XmlJmsConverter;
-import handle.handler;
-
+package pt.uc.dei.aor.paj.crowler;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,12 +15,18 @@ import javax.jms.JMSException;
 import javax.naming.NamingException;
 import javax.xml.bind.JAXBException;
 
-import jmsTopic.TopicSendClient;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import pt.uc.dei.aor.paj.generated.FeedNoticias;
+import pt.uc.dei.aor.paj.generated.Noticia;
+import pt.uc.dei.aor.paj.generated.NoticiasRegiao;
+import pt.uc.dei.aor.paj.handle.XMLGregorianCalendarConversionUtil;
+import pt.uc.dei.aor.paj.handle.XmlJmsConverter;
+import pt.uc.dei.aor.paj.handle.handler;
+import pt.uc.dei.aor.paj.jmsTopic.TopicSendClient;
 
 public class WebCrawler {
 	
@@ -148,7 +146,7 @@ public class WebCrawler {
 	public void generateXMLFile(FeedNoticias cnoticias, String outputfilename) {
 		System.out.println("A gerar ficheiro XML: " + outputfilename);
 		try {
-			handler.marshal(cnoticias, new File(outputfilename), "text.xsl");
+			handler.marshal(cnoticias, new File(outputfilename), "src/main/resources/text.xsl");
 		} catch (IOException | JAXBException e) {
 			System.out.println("Falha ao gerar o ficheiro XML (Marshal)");
 		}
@@ -245,7 +243,7 @@ public class WebCrawler {
 			thedate = formatter.parse(dateInString);
 			// System.out.println(thedate);
 			// System.out.println(formatter.format(thedate));
-			noticia.setData(handle.XMLGregorianCalendarConversionUtil
+			noticia.setData(pt.uc.dei.aor.paj.handle.XMLGregorianCalendarConversionUtil
 					.asXMLGregorianCalendar(thedate));
 
 		} catch (ParseException e) {

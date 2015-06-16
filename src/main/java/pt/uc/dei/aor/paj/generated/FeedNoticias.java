@@ -6,7 +6,7 @@
 //
 
 
-package generated;
+package pt.uc.dei.aor.paj.generated;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

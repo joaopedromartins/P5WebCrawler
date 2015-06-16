@@ -1,4 +1,4 @@
-package handle;
+package pt.uc.dei.aor.paj.handle;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

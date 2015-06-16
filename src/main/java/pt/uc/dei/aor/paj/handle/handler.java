@@ -1,4 +1,4 @@
-package handle;
+package pt.uc.dei.aor.paj.handle;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import generated.FeedNoticias;
+import pt.uc.dei.aor.paj.generated.FeedNoticias;
 
 public class handler {
 	
@@ -24,7 +24,7 @@ public class handler {
         Marshaller m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty("com.sun.xml.internal.bind.xmlHeaders",
-        		"<?xml-stylesheet type=\"text/xsl\" href=\"" + xmlFilename + "\" ?>\n");
+        		"\n<?xml-stylesheet type=\"text/xsl\" href=\"" + xmlFilename + "\" ?>\n");
         m.marshal(feed, writer);
         writer.close();
     }

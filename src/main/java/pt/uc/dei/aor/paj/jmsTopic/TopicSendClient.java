@@ -1,4 +1,4 @@
-package jmsTopic;
+package pt.uc.dei.aor.paj.jmsTopic;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
