@@ -3,35 +3,25 @@ package crowler;
 import generated.FeedNoticias;
 import generated.Noticia;
 import generated.NoticiasRegiao;
-import handle.FicheiroDeTexto;
 import handle.XMLGregorianCalendarConversionUtil;
 import handle.XmlJmsConverter;
 import handle.handler;
 
-import java.io.BufferedWriter;
+
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Scanner;
 import java.util.TimeZone;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 import javax.xml.bind.JAXBException;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import jmsTopic.TopicSendClient;
 
