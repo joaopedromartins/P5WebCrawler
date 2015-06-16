@@ -47,18 +47,18 @@ public class XMLGregorianCalendarConversionUtil {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Date currentDate = new Date(); // Current date
-		// java.util.Date to XMLGregorianCalendar
-		XMLGregorianCalendar xmlGC = XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(
-				currentDate);
-		System.out.println(
-				"Current date in XMLGregorianCalendar format: " + xmlGC.toString());
-
-
-		// XMLGregorianCalendar to java.util.Date
-		System.out.println(
-				"Current date in java.util.Date format: " +
-						XMLGregorianCalendarConversionUtil.asDate(xmlGC).toString());
-	}
+//	public static void main(String[] args) {
+//		Date currentDate = new Date(); // Current date
+//		// java.util.Date to XMLGregorianCalendar
+//		XMLGregorianCalendar xmlGC = XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(
+//				currentDate);
+//		System.out.println(
+//				"Current date in XMLGregorianCalendar format: " + xmlGC.toString());
+//
+//
+//		// XMLGregorianCalendar to java.util.Date
+//		System.out.println(
+//				"Current date in java.util.Date format: " +
+//						XMLGregorianCalendarConversionUtil.asDate(xmlGC).toString());
+//	}
 }
