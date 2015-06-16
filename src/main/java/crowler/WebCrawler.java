@@ -41,29 +41,16 @@ public class WebCrawler {
 	
 	Logging unpublishedLog = new Logging();
 	
-	public static void main(String[] args) {
-				
-		System.out.println("start");
-		
+	public static void main(String[] args) {				
+			
 		(new WebCrawler()).StartCrlowling();
-		
-		
 	}
+	
+	
 
 	public void StartCrlowling() {
 		
-		
-		
-		ArrayList<String> unpublished = unpublishedLog.lerTodasAsLinha();
-		for (String string : unpublished) {			
-			if(sendXMLFileToTopic(string)){
-				unpublished.remove(string);
-			}
-			unpublishedLog.escreverFicheiro(unpublished);
-		}
-		
-		
-		
+		checkUnsendMessages();
 		
 		FeedNoticias feed = new FeedNoticias();
 		feed.setData(XMLGregorianCalendarConversionUtil
@@ -86,7 +73,7 @@ public class WebCrawler {
 				"/americas");
 		quant += americas.getQuantidade();
 
-		System.out.println("1");
+		
 		feed.setQuantidade(quant);
 		feed.getNoticiasRegiao().add(europe);
 		feed.getNoticiasRegiao().add(us);
@@ -95,17 +82,34 @@ public class WebCrawler {
 		feed.getNoticiasRegiao().add(middleeast);
 		feed.getNoticiasRegiao().add(africa);
 		feed.getNoticiasRegiao().add(americas);
-		System.out.println("2");
+		
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH_mm_ss");
 		Calendar dataatual = Calendar.getInstance();
 		String data = dateFormat.format(dataatual.getTime());
-		System.out.println("4");
+		
+		String filename = "newsteste_" + data + ".xml";
+		generateXMLFile(feed, filename);
+		
 
-		generateXMLFile(feed, "newsteste_" + data + ".xml");
-		System.out.println("1");
-
-		sendXMLFileToTopic("newsteste_" + data + ".xml");
+		if(!sendXMLFileToTopic(filename)){
+			int count =0;
+			System.out.println("»»Falha ao enviar publicação para o servidor");
+			while(count < 5 && !sendXMLFileToTopic(filename)){
+				count++;
+				System.out.println(count+"ª tentativa");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if(count == 5){
+				unpublishedLog.adicionarLinha(filename);
+			}
+			
+		}
+		
 		
 		System.out.println("--Terminado!--");
 	}
@@ -136,9 +140,24 @@ public class WebCrawler {
 		try {
 			handler.marshal(cnoticias, new File(outputfilename), "text.xsl");
 		} catch (IOException | JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Falha ao gerar o ficheiro XML (Marshal)");
 		}
+	}
+	
+	public void checkUnsendMessages(){
+		ArrayList<String> unpublished = unpublishedLog.lerTodasAsLinha();
+		ArrayList<String> remain_unpublished = new ArrayList<String>();
+		if(unpublished.size() > 0){
+			System.out.println(unpublished.size() + " publicações pendentes!\n"
+					+ "A tentar publicar...");
+			for (String string : unpublished) {			
+				if(!sendXMLFileToTopic(string)){
+					remain_unpublished.add(string);
+				}
+				unpublishedLog.escreverFicheiro(remain_unpublished);
+			}
+		}
+		
 	}
 
 	public boolean sendXMLFileToTopic(String filename) {
@@ -147,72 +166,16 @@ public class WebCrawler {
 
 		try {
 			TopicSendClient top = new TopicSendClient();
-			System.out.println("5");
+			
 			top.send(message);
 			
 			return true;
-		} catch (JMSException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			unpublishedLog.adicionarLinha(filename);
+		} catch (JMSException | NamingException e) {			
+			System.out.println("Falha ao publicar o topico");
 			return false;
 		}
 
 	}
-	
-//	public ArrayList<String> readLoger(){
-//		FicheiroDeTexto ft= new FicheiroDeTexto();
-//		String leitura = "";
-//		ArrayList<String> unpublished = new ArrayList<>();
-//		try {
-//			ft.abreLeitura("myFile.log");
-//			leitura = ft.leLinha();
-//			
-//			while (!(leitura == null)){
-//				System.out.println("A ler ficheiro log");
-//				unpublished.add(leitura);
-//				leitura=ft.leLinha();
-//			}
-//			
-//			ft.fechaLeitura();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		return unpublished;
-//	}
-//
-//	public void sendLoger(String log) {
-//		FicheiroDeTexto ft= new FicheiroDeTexto();
-//		try {
-//			ft.abreEscrita("myFile.log");
-//			ft.escreveLinha("log");
-//			ft.fechaEscrita();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		
-//		try {
-//			System.out.println("start writing a file");
-//			
-//			// create a new file with specified file name
-//			FileWriter fw = new FileWriter(new File("myFilwwwwe.log"));
-//
-//			// create the IO strem on that file
-//			BufferedWriter bw = new BufferedWriter(fw);
-//
-//			// write a string into the IO stream
-//			bw.append("my log entry");
-//			bw.flush();
-//
-//			// don't forget to close the stream!
-//			bw.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 
 	public Noticia getNoticia(String url) {
 		Noticia noticia = new Noticia();
@@ -224,11 +187,10 @@ public class WebCrawler {
 			try {
 				doc = Jsoup.connect(url).userAgent("Mozilla").timeout(10000)
 						.get();
-
 				break;
 			} catch (IOException e) {
 				count++;
-				e.printStackTrace();
+				System.out.println("Falha ao carregar a noticia "+ count + "ª tentativa");
 			}
 		}
 		if(count == 5){
@@ -262,7 +224,7 @@ public class WebCrawler {
 					.asXMLGregorianCalendar(thedate));
 
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.out.println("Falha ao converter a data");
 		}
 
 		// System.out.println("Data: " + thedate.toString());
@@ -341,11 +303,9 @@ public class WebCrawler {
 			}
 			// System.out.println("--------------Nº de noticias: "+news.size());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Falha ao carregar a lista de noticias");
 		} catch (IllegalArgumentException e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			System.out.println("Falha ao carregar a lista de noticias");
 		}
 		return news;
 	}

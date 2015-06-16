@@ -10,29 +10,7 @@ import java.util.ArrayList;
 
 public class Logging {
 	
-	private static final String logname = "myFile.log";
-	
-//	public static void main(String[] args) {
-//		
-//		adicionarLinha("linha1");
-//		adicionarLinha("linha2");
-//		adicionarLinha("linha3");
-//		adicionarLinha("linha4");
-//		
-//		ArrayList<String> t = new ArrayList<String>();
-//		t.add("nova1");
-//		t.add("nova1");
-//		t.add("nova1");
-//		t.add("nova1");
-//		t.add("nova1");
-//		
-//		escreverFicheiro(t);
-//		
-//		for (String string : lerTodasAsLinha()) {
-//			System.out.println(string);
-//		}
-//
-//	}
+	private static final String logname = "unpublished.log";
 	
 	public void adicionarLinha(String texto){
 		System.out.println("adicionar a linha "+texto);

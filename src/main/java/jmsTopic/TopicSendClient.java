@@ -13,12 +13,7 @@ import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-/** 
- *  A JMS client example program that sends a TextMessage to a Topic
- *    
- *  @author Scott.Stark@jboss.org
- *  @version $Revision: 1.9 $
- */
+
 public class TopicSendClient
 {
     TopicConnection conn = null;
@@ -41,16 +36,13 @@ public class TopicSendClient
     private void sendAsync(String text)
         throws JMSException, NamingException
     {
-        System.out.println("Begin sendAsync");
         // Setup the pub/sub connection, session
         setupPubSub();
         // Send a text msg
         TopicPublisher send = session.createPublisher(topic);
         TextMessage tm = session.createTextMessage(text);
         send.publish(tm);
-//        System.out.println("sendAsync, sent text=" +  tm.getText());
         send.close();
-        System.out.println("End sendAsync");
     }
     
     private void stop() 
@@ -62,24 +54,8 @@ public class TopicSendClient
     }
     
     public void send (String msg) throws JMSException, NamingException{
-    	System.out.println("Begin TopicSendClient, now=" + 
-    			System.currentTimeMillis());
-//    	TopicSendClient client = new TopicSendClient();
     	sendAsync(msg);
     	stop();
-    	System.out.println("End TopicSendClient");
     }
-    
-//    public static void main(String args[], String msg) 
-//        throws Exception
-//    {
-//        System.out.println("Begin TopicSendClient, now=" + 
-//		                   System.currentTimeMillis());
-//        TopicSendClient client = new TopicSendClient();
-//	    client.sendAsync(msg);
-//        client.stop();
-//        System.out.println("End TopicSendClient");
-//        System.exit(0);
-//    }
     
 }
