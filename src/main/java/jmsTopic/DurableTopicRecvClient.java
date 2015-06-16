@@ -94,18 +94,18 @@ public class DurableTopicRecvClient implements MessageListener
     	System.exit(0);
     }
     
-//    public static void main(String args[]) 
-//        throws Exception
-//    {
-//        System.out.println("Begin DurableTopicRecvClient, now=" + 
-//                           System.currentTimeMillis());
-//        DurableTopicRecvClient client = new DurableTopicRecvClient();
-//        client.recvAsync();
-//        System.out.println("Press enter to finish...");
-//        System.in.read();
-//        client.stop();
-//        System.out.println("End DurableTopicRecvClient");
-//        System.exit(0);
-//    }
+    public static void main(String args[]) 
+        throws Exception
+    {
+        System.out.println("Begin DurableTopicRecvClient, now=" + 
+                           System.currentTimeMillis());
+        DurableTopicRecvClient client = new DurableTopicRecvClient();
+        client.recvAsync();
+        System.out.println("Press enter to finish...");
+        System.in.read();
+        client.stop();
+        System.out.println("End DurableTopicRecvClient");
+        System.exit(0);
+    }
     
 }

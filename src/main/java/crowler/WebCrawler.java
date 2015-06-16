@@ -12,6 +12,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +33,6 @@ import javax.naming.NamingException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import jms.Sender;
 import jmsTopic.TopicSendClient;
 
 import org.jsoup.Jsoup;
@@ -94,7 +97,7 @@ public class WebCrawler {
 
 		if(!sendXMLFileToTopic(filename)){
 			int count =0;
-			System.out.println("»»Falha ao enviar publicação para o servidor");
+			System.out.println("»» Falha ao enviar publicação para o servidor");
 			while(count < 5 && !sendXMLFileToTopic(filename)){
 				count++;
 				System.out.println(count+"ª tentativa");
@@ -108,6 +111,23 @@ public class WebCrawler {
 				unpublishedLog.adicionarLinha(filename);
 			}
 			
+		} else {
+			System.out.println("Mensagem enviada com sucesso!");
+			try{
+				 
+	    		File file = new File(filename);
+	 
+	    		if(file.delete()){
+	    			System.out.println(file.getName() + " is deleted!");
+	    		}else{
+	    			System.out.println("Delete operation is failed.");
+	    		}
+	 
+	    	}catch(Exception e){
+	 
+	    		e.printStackTrace();
+	 
+	    	}
 		}
 		
 		
@@ -153,6 +173,22 @@ public class WebCrawler {
 			for (String string : unpublished) {			
 				if(!sendXMLFileToTopic(string)){
 					remain_unpublished.add(string);
+				}else {
+					try{
+						 
+			    		File file = new File(string);
+			 
+			    		if(file.delete()){
+			    			System.out.println(file.getName() + " is deleted!");
+			    		}else{
+			    			System.out.println("Delete operation is failed.");
+			    		}
+			 
+			    	}catch(Exception e){
+			 
+			    		e.printStackTrace();
+			 
+			    	}
 				}
 				unpublishedLog.escreverFicheiro(remain_unpublished);
 			}
@@ -187,7 +223,6 @@ public class WebCrawler {
 			try {
 				doc = Jsoup.connect(url).userAgent("Mozilla").timeout(10000)
 						.get();
-				break;
 			} catch (IOException e) {
 				count++;
 				System.out.println("Falha ao carregar a noticia "+ count + "ª tentativa");
