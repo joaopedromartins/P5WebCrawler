@@ -32,7 +32,7 @@ public class WebCrawler {
 	
 	Logging unpublishedLog = new Logging();
 	
-	public static void main(String[] args) {				
+	public static void main(String[] args) throws IOException {				
 			
 		(new WebCrawler()).StartCrlowling();
 	}
@@ -146,13 +146,13 @@ public class WebCrawler {
 	public void generateXMLFile(FeedNoticias cnoticias, String outputfilename) {
 		System.out.println("A gerar ficheiro XML: " + outputfilename);
 		try {
-			handler.marshal(cnoticias, new File(outputfilename), "src/main/resources/text.xsl");
+			handler.marshal(cnoticias, new File(outputfilename), "text.xsl");
 		} catch (IOException | JAXBException e) {
 			System.out.println("Falha ao gerar o ficheiro XML (Marshal)");
 		}
 	}
 	
-	public void checkUnsendMessages(){
+	public void checkUnsendMessages() {
 		ArrayList<String> unpublished = unpublishedLog.lerTodasAsLinha();
 		ArrayList<String> remain_unpublished = new ArrayList<String>();
 		if(unpublished.size() > 0){
@@ -167,14 +167,14 @@ public class WebCrawler {
 			    		File file = new File(string);
 			 
 			    		if(file.delete()){
-			    			System.out.println(file.getName() + " is deleted!");
+			    			System.out.println("Ficheiro " + file.getName() + " apagado com sucesso!");
 			    		}else{
-			    			System.out.println("Delete operation is failed.");
+			    			System.out.println("Falha ao apagar o ficheiro");
 			    		}
 			 
 			    	}catch(Exception e){
 			 
-			    		e.printStackTrace();
+			    		System.out.println("Falha ao apagar o ficheiro");
 			 
 			    	}
 				}
@@ -185,19 +185,20 @@ public class WebCrawler {
 	}
 
 	public boolean sendXMLFileToTopic(String filename) {
-		System.out.println("A enviar mensagem para o topico");
-		String message = XmlJmsConverter.convertXMLFileToString(filename);
-
+		
 		try {
+			System.out.println("A enviar mensagem para o topico");
+			String message;
+			message = XmlJmsConverter.convertXMLFileToString(filename);
 			TopicSendClient top = new TopicSendClient();
-			
+
 			top.send(message);
 			
 			return true;
-		} catch (JMSException | NamingException e) {			
+		} catch (IOException | JMSException | NamingException e){
 			System.out.println("Falha ao publicar o topico");
 			return false;
-		}
+		} 
 
 	}
 
@@ -206,7 +207,7 @@ public class WebCrawler {
 		Document doc = null;
 		
 		int count=0;
-		// dangerous - at least use a counter
+		
 		while (doc == null && count < 5) {
 			try {
 				doc = Jsoup.connect(url).userAgent("Mozilla").timeout(10000)
@@ -221,13 +222,10 @@ public class WebCrawler {
 		}
 
 		String titulo = doc.select("h1.pg-headline").first().text();
-
-		// System.out.println("título: " + titulo);
 		noticia.setTitulo(titulo);
 
 		Elements metalinkssection = doc.select("meta[itemprop=articleSection]");
 		String section = metalinkssection.attr("content");
-		// System.out.println("Section: "+section);
 		noticia.setSeccao(section);
 
 		Elements metalinksdata = doc.select("meta[itemprop=dateModified]");
@@ -241,8 +239,6 @@ public class WebCrawler {
 
 		try {
 			thedate = formatter.parse(dateInString);
-			// System.out.println(thedate);
-			// System.out.println(formatter.format(thedate));
 			noticia.setData(pt.uc.dei.aor.paj.handle.XMLGregorianCalendarConversionUtil
 					.asXMLGregorianCalendar(thedate));
 
@@ -250,42 +246,32 @@ public class WebCrawler {
 			System.out.println("Falha ao converter a data");
 		}
 
-		// System.out.println("Data: " + thedate.toString());
-
 		Elements metalinksurl = doc.select("meta[itemprop=url]");
 		String urln = metalinksurl.attr("content");
-		// System.out.println("URL: "+urln);
 		noticia.setUrl(urln);
 
 		Elements metalinksauthor = doc.select("meta[itemprop=author]");
 		String author = metalinksauthor.attr("content");
-		// System.out.println("Author: "+author);
 		noticia.setAutor(author);
 
 		Elements metalinksheadline = doc.select("meta[itemprop=headline]");
 		String headline = metalinksheadline.attr("content");
-		// System.out.println("Headline: "+headline);
 		noticia.setCabecalho(headline);
 
 		Elements metalinksdescription = doc
 				.select("meta[itemprop=description]");
 		String description = metalinksdescription.attr("content");
-		// System.out.println("Description: "+description);
 		noticia.setDescricao(description);
 
 		Elements corpo = doc.select("p.zn-body__paragraph");
-		// System.out.println(corpo.size());
 		String corpotx = "";
 		for (Element paragrafo : corpo) {
 			corpotx += paragrafo.text() + " ";
 		}
-		// System.out.println("corpo: " + corpotx);
-		// System.out.println();
 		noticia.setCorpo(corpotx);
 
 		Elements metalinksimage = doc.select("meta[itemprop=image]");
 		String image = metalinksimage.attr("content");
-		// System.out.println("image: "+image);
 		noticia.setImagem(image);
 		return noticia;
 	}
@@ -298,16 +284,6 @@ public class WebCrawler {
 		String newsUrl;
 
 		HashSet<String> news = new HashSet<>();
-
-		// data actual
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		Calendar dataatual = Calendar.getInstance();
-		String datecreated = dateFormat.format(dataatual.getTime());
-		// System.out.println(datecreated);
-
-		// regiao
-		String regiao = path.substring(1).toUpperCase();
-		// System.out.println(regiao);
 
 		try {
 			Document doc = Jsoup.connect(crowlUrl).userAgent("Mozilla")
@@ -324,7 +300,6 @@ public class WebCrawler {
 					news.add(newsUrl);
 				}
 			}
-			// System.out.println("--------------Nº de noticias: "+news.size());
 		} catch (IOException e) {
 			System.out.println("Falha ao carregar a lista de noticias");
 		} catch (IllegalArgumentException e) {

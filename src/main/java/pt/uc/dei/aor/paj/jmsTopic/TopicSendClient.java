@@ -1,13 +1,10 @@
 package pt.uc.dei.aor.paj.jmsTopic;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
 import javax.jms.TopicPublisher;
-//import javax.jms.TopicSlistubscriber;
 import javax.jms.TopicSession;
 import javax.jms.TextMessage;
 import javax.naming.InitialContext;

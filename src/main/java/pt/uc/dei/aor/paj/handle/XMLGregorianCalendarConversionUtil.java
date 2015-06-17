@@ -1,16 +1,11 @@
 package pt.uc.dei.aor.paj.handle;
 
-import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-/**
- * A utility class for converting objects between java.util.Date and
- * XMLGregorianCalendar types
- *
- */
+
 public class XMLGregorianCalendarConversionUtil {
 
 	// DatatypeFactory creates new javax.xml.datatype Objects that map XML
@@ -47,18 +42,5 @@ public class XMLGregorianCalendarConversionUtil {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		Date currentDate = new Date(); // Current date
-//		// java.util.Date to XMLGregorianCalendar
-//		XMLGregorianCalendar xmlGC = XMLGregorianCalendarConversionUtil.asXMLGregorianCalendar(
-//				currentDate);
-//		System.out.println(
-//				"Current date in XMLGregorianCalendar format: " + xmlGC.toString());
-//
-//
-//		// XMLGregorianCalendar to java.util.Date
-//		System.out.println(
-//				"Current date in java.util.Date format: " +
-//						XMLGregorianCalendarConversionUtil.asDate(xmlGC).toString());
-//	}
+
 }

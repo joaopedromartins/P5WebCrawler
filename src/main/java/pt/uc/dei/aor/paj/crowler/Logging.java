@@ -13,7 +13,7 @@ public class Logging {
 	private static final String logname = "unpublished.log";
 	
 	public void adicionarLinha(String texto){
-		System.out.println("adicionar a linha "+texto);
+		
 		try {
 			
 			File file = new File(logname);
@@ -28,8 +28,7 @@ public class Logging {
 			bw.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Erro ao escrever no ficheiro "+ logname);
 		}
 	}
 	
@@ -54,8 +53,7 @@ public class Logging {
 			bw.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Erro ao escrever no ficheiro "+ logname);
 		}
 
 	}
@@ -63,7 +61,13 @@ public class Logging {
 	public ArrayList<String> lerTodasAsLinha(){
 		ArrayList<String> read = new ArrayList<>();
 		try {
+			
 			File file = new File(logname);
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
@@ -73,7 +77,7 @@ public class Logging {
 			fileReader.close();
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Não foi possível ler o ficheiro de mensagens não publicadas");
 		}
 		return read;
 	}
